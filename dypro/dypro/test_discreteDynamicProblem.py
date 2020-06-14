@@ -51,5 +51,9 @@ class DynamicProblemTestCase(unittest.TestCase):
         dp = self.DP(5, F=dictAcc)
 
         self.assertEqual(dp.accOptimalCost(), dictAcc)
-
+    
+    def test_generator_from_list(self):
+        a = range(5)
+        gen = generatorFromLIst([0,1,2,3,4])
+        self.assertNotEqual(a, gen)
     

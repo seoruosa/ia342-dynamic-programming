@@ -34,6 +34,9 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
             self.__F[k, state] = self.inf()
             return self.inf()
     
+    def policy(self, k:int, state:np.array) -> np.array:
+        return self.__policy[k, state]
+    
     def accOptimalCost(self) -> dict:
         """
         Returns the accumulated optimal cost for all states and stages
@@ -101,7 +104,7 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
         pass
 
     @abc.abstractmethod
-    def transictionFunction(self, k:int, state:np.array, decision:np.array) -> np.array:
+    def transitionFunction(self, k:int, state:np.array, decision:np.array) -> np.array:
         """
         Given the current stage, state and decision calculates the state of next stage
 
@@ -137,9 +140,9 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
                 F_aux = self.inf()
                 u_aux = None
                 # Calculates the best decision on stage k and state uk
-                for uk in self.decisionsSpace(k):
-                    xk_next = self.transitionFunction(xk, uk, k)
-                    F_aux_uk = self.elementaryCost(xk, uk, k) + self.F(k+1, xk_next)
+                for uk in self.decision(k):
+                    xk_next = self.transitionFunction(k, xk, uk)
+                    F_aux_uk = self.elementaryCost(k, xk, uk) + self.F(k+1, xk_next)
 
                     if F_aux > F_aux_uk:
                         F_aux = F_aux_uk
@@ -157,9 +160,13 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
         for stage in stagesList:
             yield stage
 
+def generatorFromLIst(itens:list):
+    """
+    Return a generator from the list
+    """
+    for i in itens:
+        yield i
 
 if __name__ == '__main__':
-    dp = DiscreteDynamicProblem(3)
-
-    for i in dp.stagesGenerator():
+    for i in generatorFromLIst(list(range(5))):
         print(i)
