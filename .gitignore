@@ -2,3 +2,6 @@ papers
 .vscode
 dypro/venv
 add-key.sh
+dypro/__pycache__/
+*/__pycache__/
+**/__pycache__/
