@@ -35,6 +35,12 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
             return self.inf()
     
     def policy(self, k:int, state:np.array) -> np.array:
+        """
+        Return the best policy of stage k and given state
+
+        Returns:
+            np.array: decision
+        """
         return self.__policy[k, state]
     
     def accOptimalCost(self) -> dict:
@@ -149,6 +155,25 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
                         u_aux = uk
                 self.__F[k, xk] = F_aux
                 self.__policy[k, xk] = u_aux
+    
+    def optimalTrajectory(self, initialState:np.array):
+        """
+        Calculates the optimal trajectory given a initial state
+
+        Args:
+            initialState (np.array): initial state to calculate the optimal trajectory
+
+        Returns:
+            u_optimal: states of the optimal trajectory
+            policy_optimal: decisions for the optimal trajectory
+        """
+        u_optimal = [initialState]
+        policy_optimal = list()
+        for k in range(self.numberOfStages()):
+            policy_optimal.append(self.policy(k, u_optimal[-1]))
+            u_optimal.append(self.transitionFunction(k, u_optimal[-1], policy_optimal[-1]))
+        
+        return (u_optimal, policy_optimal, )
 
     def __stagesGenerator(self):
         """
@@ -166,6 +191,14 @@ def generatorFromLIst(itens:list):
     """
     for i in itens:
         yield i
+
+def generatorFromLists(a:list, b:list):
+    """
+    Return a generator of tuples of lists a and b
+    """
+    for i in a:
+        for j in b:
+            yield (i, j)
 
 if __name__ == '__main__':
     for i in generatorFromLIst(list(range(5))):

@@ -2,6 +2,8 @@ https://code.visualstudio.com/docs/python/debugging
 
 * https://medium.com/harder-choices/dynamic-programming-in-python-reinforcement-learning-bb288d95288f
 * https://skerritt.blog/dynamic-programming/
+* https://opendsa-server.cs.vt.edu/ODSA/Books/Everything/html/DynamicProgramming.html
+* 
 
 
 
