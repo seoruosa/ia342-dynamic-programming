@@ -215,6 +215,22 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
         stagesList= range(self.numberOfStages()-1, -1, -1)
         for stage in stagesList:
             yield stage
+        
+class RandomVariable():
+    def __init__(self, value:tuple, probability:float):
+            self.value = value
+            self.probability = probability
+            if(probability>1 or probability<0):
+                raise TypeError
+    
+    def getValue(self):
+        return self.value
+    
+    def getProbability(self):
+        return self.probability
+    
+    def __str__(self):
+        return f"{self.getProbability()} {self.getValue()}"
 
 def generatorFromLIst(itens:list):
     """
