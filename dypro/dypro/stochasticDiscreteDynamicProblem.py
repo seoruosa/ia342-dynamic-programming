@@ -1,6 +1,7 @@
 import abc
 import logging
 import numpy as np
+from randomVariable import RandomVariable
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -33,6 +34,9 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
         else:
             self.__F[k, state] = self.inf()
             return self.inf()
+    
+    def allPolicy(self):
+        return self.__policy
     
     def policy(self, k:int, state:np.array) -> np.array:
         """
@@ -135,22 +139,22 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
         """
         pass
 
+    # @abc.abstractmethod
+    # def probability(self, k:int, random_variable:np.array) -> float:
+    #     """
+    #     Returns a probability for random variable
+
+    #     Args:
+    #         k (int): [description]
+    #         random_variable (np.array): [description]
+
+    #     Returns:
+    #         float: [description]
+    #     """
+    #     pass
+
     @abc.abstractmethod
-    def probability(self, k:int, random_variable:np.array) -> float:
-        """
-        Returns a probability for random variable
-
-        Args:
-            k (int): [description]
-            random_variable (np.array): [description]
-
-        Returns:
-            float: [description]
-        """
-        pass
-
-    @abc.abstractmethod
-    def realizableRandomValues(self, k:int) -> np.array:
+    def realizableRandomValues(self, k:int) -> RandomVariable:
         """
         Generates all realizable values for each stage
 
@@ -176,10 +180,10 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
                 # Calculates the best decision on stage k and state uk
                 for uk in self.decision(k):
                     # Expected value of accumulated cost for decision uk and state xk
-                    E_F_aux = 0 
-                    for wk in self.realizableRandomValues(k):
-                        xk_next = self.transitionFunction(k, xk, uk, wk)
-                        E_F_aux = self.probability(k, wk) * (self.elementaryCost(k, xk, uk, wk) + self.F(k+1, xk_next)) + E_F_aux
+                    E_F_aux = 0.0
+                    for wk in self.realizableRandomValues(k).randomValueIterator():
+                        xk_next = self.transitionFunction(k, xk, uk, wk.getValue())
+                        E_F_aux += wk.getProbability() * (self.elementaryCost(k, xk, uk, wk.getValue()) + self.F(k+1, xk_next))
 
                     if F_aux > E_F_aux:
                         F_aux = E_F_aux
@@ -215,22 +219,6 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
         stagesList= range(self.numberOfStages()-1, -1, -1)
         for stage in stagesList:
             yield stage
-        
-class RandomVariable():
-    def __init__(self, value:tuple, probability:float):
-            self.value = value
-            self.probability = probability
-            if(probability>1 or probability<0):
-                raise TypeError
-    
-    def getValue(self):
-        return self.value
-    
-    def getProbability(self):
-        return self.probability
-    
-    def __str__(self):
-        return f"{self.getProbability()} {self.getValue()}"
 
 def generatorFromLIst(itens:list):
     """
