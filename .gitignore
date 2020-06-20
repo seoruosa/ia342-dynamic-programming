@@ -5,3 +5,5 @@ add-key.sh
 dypro/__pycache__/
 */__pycache__/
 **/__pycache__/
+**/venv/
+**/playground.py
