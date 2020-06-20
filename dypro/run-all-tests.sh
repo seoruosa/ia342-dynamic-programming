@@ -1,0 +1,1 @@
+python -m unittest dypro/tests/test_*
