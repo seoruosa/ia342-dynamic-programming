@@ -1,9 +1,6 @@
-https://code.visualstudio.com/docs/python/debugging
+## ia342-dynamic-programming
 
-* https://medium.com/harder-choices/dynamic-programming-in-python-reinforcement-learning-bb288d95288f
-* https://skerritt.blog/dynamic-programming/
-* https://opendsa-server.cs.vt.edu/ODSA/Books/Everything/html/DynamicProgramming.html
-* 
+Some usefull code for classes of Topics in Systems Optimization, that discuss dynamic programming problems
 
 
 
@@ -29,3 +26,10 @@ To stop the virtual environment
 To run all tests, do:
 
         ./run-all-tests.sh
+
+## Links
+* https://code.visualstudio.com/docs/python/debugging
+
+* https://medium.com/harder-choices/dynamic-programming-in-python-reinforcement-learning-bb288d95288f
+* https://skerritt.blog/dynamic-programming/
+* https://opendsa-server.cs.vt.edu/ODSA/Books/Everything/html/DynamicProgramming.html
