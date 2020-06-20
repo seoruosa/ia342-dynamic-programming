@@ -65,6 +65,3 @@ if __name__ == '__main__':
 
     print(f"All policy: {a.allPolicy()}")
     print(f"Expectancy of cost: {a.F(0, initialState)}")
-
-    # for i in range(3):
-    #     print(demandRandomValues(i))
