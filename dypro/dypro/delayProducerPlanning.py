@@ -40,7 +40,7 @@ if __name__ == '__main__':
     demandStage = lambda k: [2,4,1][k]
     stockCost = lambda k, state: state[0] if state[0]<=4 else np.inf
     changeProductionCost = lambda k, state, decision: max(decision - state[1], state[1] - decision)*2
-    productionCost = lambda k, decision: ([10, 17, 20][k])*decision
+    productionCost = lambda k, decision: ([3, 5, 3][k])*decision
     stateSpace = lambda k: generatorFromLists([0, 1, 2, 3, 4], [0, 1, 2, 3])
     productionSpace = lambda k: generatorFromLIst([0, 1, 2, 3])
 
