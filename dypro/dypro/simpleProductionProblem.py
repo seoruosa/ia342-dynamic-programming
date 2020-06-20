@@ -41,7 +41,7 @@ if __name__ == '__main__':
     productionCost = lambda k, decision: [10, 17, 20][decision]
     stateSpace = lambda k: generatorFromLIst([0, 1, 2])
     productionSpace = lambda k: generatorFromLIst([0, 1, 2])
-    finalState = lambda state: 1 if state==1 else np.inf
+    finalState = lambda state: 0 if state==1 else np.inf
     initialStock = 1
     
     dp = SimpleProductionProblem(STAGES, initialStock, demandStage, productionSpace, stateSpace, finalState, productionCost, stockCost)
