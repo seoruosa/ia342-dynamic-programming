@@ -1,4 +1,4 @@
-## ia342-dynamic-programming
+# ia342-dynamic-programming
 
 Some usefull code for classes of Topics in Systems Optimization, that discuss dynamic programming problems
 
