@@ -21,13 +21,26 @@ class SimpleStochasticDiscreteDynamicProblem(StochasticDiscreteDynamicProblem):
         return self.__feasibleDecisions(k)
 
     def elementaryCost(self, k:int, state:np.array, decision:np.array, random_variable:np.array) -> float:
-        return self.__productionCost(k, decision) + self.__stockCost(k, state)
+        # return self.__productionCost(k, decision) + self.__stockCost(k, state) + self.__stockCost(k, state + decision - random_variable)
+        # return self.__productionCost(k, decision) + self.__stockCost(k, self.__limit(state + decision - random_variable, 0, 4)) + self.__stockCost(k, state + decision - random_variable)
+        return self.__productionCost(k, decision) + self.__stockCost(k, state + decision - random_variable)
+    
+    # def __costOfDontMeetTheDemand(self, k, state, decision, random_variable):
+        
+    #     return
 
     def finalStateCost(self, state:np.array) -> float:
         return self.__finalStateCost(state)
 
+    def __limit(self, v, min, max):
+        if v<min:
+            return min
+        if v>max:
+            return max
+        return v
+
     def transitionFunction(self, k:int, state:np.array, decision:np.array, random_variable:np.array) -> np.array:
-        return state + decision - random_variable
+        return self.__limit(state + decision - random_variable, 0, 4)
 
     def initialState(self) -> np.array:
         return self.__initialState
@@ -46,7 +59,7 @@ if __name__ == '__main__':
             return (state-4)*2 + 4
         else:
             return state
-
+    
     productionCost = lambda k, decision: ([3, 5, 3][k])*decision
     
     stateSpace = lambda k: generatorFromLIst([0, 1, 2, 3, 4])
@@ -65,3 +78,4 @@ if __name__ == '__main__':
 
     print(f"All policy: {a.allPolicy()}")
     print(f"Expectancy of cost: {a.F(0, initialState)}")
+    print(f"{a.accOptimalCost()}")
