@@ -184,6 +184,7 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
                     for wk in self.realizableRandomValues(k).randomValueIterator():
                         xk_next = self.transitionFunction(k, xk, uk, wk.getValue())
                         E_F_aux += wk.getProbability() * (self.elementaryCost(k, xk, uk, wk.getValue()) + self.F(k+1, xk_next))
+                        logging.debug(f"    k: {k} xk: {xk} uk: {uk} wk: {wk.getValue()} xk_next: {xk_next} ele_cost: {self.elementaryCost(k, xk, uk, wk.getValue())}")
 
                     if F_aux > E_F_aux:
                         F_aux = E_F_aux
