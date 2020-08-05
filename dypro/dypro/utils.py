@@ -63,6 +63,16 @@ def nearestSample(value, min, max, period=1):
     return output
 
 def sampling(min, max, period=1):
+    """Function to generate a discretization of interval, given a step.
+
+    Args:
+        min ([type]): minimum value of interval
+        max ([type]): maximum value of interval
+        period (optional): Size of step. Defaults to 1.
+
+    Yields:
+        [type]: returns all discretized values of interval
+    """    
     _maxOfRange = ceil((max-min)/period)
     
     for i in range(_maxOfRange + 1):
