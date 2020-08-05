@@ -7,3 +7,4 @@ dypro/__pycache__/
 **/__pycache__/
 **/venv/
 **/playground.py
+**.pyc
