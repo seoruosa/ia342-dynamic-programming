@@ -16,3 +16,16 @@ class UtilsTestCase(unittest.TestCase):
         result = [0, 0.5, 1, 1.5, 2]
 
         self.assertListEqual(result, list(sampling(0,2,0.5)))
+    
+    def test_0_to_1_every_0_3(self):
+        result = [0, 0.3, 0.6, 0.9, 1]
+        test = list(sampling(0, 1, 0.3))
+
+        self.assertAlmostEqualForList(result, test)
+
+
+    def assertAlmostEqualForList(self, correct:list, test:list, places=4) -> bool:
+        self.assertEqual(len(correct), len(test))
+
+        for c, t in zip(correct, test):
+            self.assertAlmostEqual(c, t, places)
