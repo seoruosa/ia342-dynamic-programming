@@ -1,5 +1,5 @@
-from discreteDynamicProblem import DiscreteDynamicProblem
-from discreteDynamicProblem import generatorFromLIst, generatorFromLists
+from dypro.dypro.discreteDynamicProblem import DiscreteDynamicProblem
+from dypro.dypro.discreteDynamicProblem import generatorFromLIst, generatorFromLists
 import numpy as np
 
 class DelayProducerPlanning(DiscreteDynamicProblem):

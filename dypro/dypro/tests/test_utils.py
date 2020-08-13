@@ -22,6 +22,14 @@ class UtilsTestCase(unittest.TestCase):
         test = list(sampling(0, 1, 0.3))
 
         self.assertAlmostEqualForList(result, test)
+    
+    def test_2_variables(self):
+        result = [(0,0), (0, 1), (1, 0), (1,1)]
+        x = list(sampling(0, 1, 1))
+        y = list(sampling(0, 1, 1))
+        test = [(a, b) for a in x for b in y]
+
+        self.assertAlmostEqualForList(result, test)
 
 
     def assertAlmostEqualForList(self, correct:list, test:list, places=4) -> bool:

@@ -1,5 +1,5 @@
-from stochasticDiscreteDynamicProblem import StochasticDiscreteDynamicProblem, generatorFromLIst
-from randomVariable import RandomVariable
+from dypro.dypro.stochasticDiscreteDynamicProblem import StochasticDiscreteDynamicProblem, generatorFromLIst
+from dypro.dypro.randomVariable import RandomVariable
 import numpy as np
 
 class SimpleStochasticDiscreteDynamicProblem(StochasticDiscreteDynamicProblem):
