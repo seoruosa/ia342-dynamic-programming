@@ -1,27 +1,28 @@
 from dypro.dypro.discreteDynamicProgramming import DiscreteDynamicProgramming
+from dypro.dypro.hidroeletricProduction import HidroeletricProduction
+
 from dypro.dypro.utils import limit, sampling, secondsOfMonth, nearestSample
 from dypro.dypro.solve import solve, optimalTrajectory
+
 import numpy as np
 
 from time import time
 
 import concurrent.futures
 
-class HidroeletricProductionProblem(DiscreteDynamicProgramming):
-    def __init__(self, numberOfStages:int, year:int, stateSampling=100, decisionSampling=100, inf=np.inf):
-        super().__init__(numberOfStages=numberOfStages, inf=inf)
+class HidroeletricProductionProblem(DiscreteDynamicProgramming, HidroeletricProduction):
+    def __init__(self, numberOfStages:int, year:int, maxFlow, stateSampling=100, decisionSampling=100, inf=np.inf):
+        DiscreteDynamicProgramming.__init__(self, numberOfStages=numberOfStages, inf=inf)
 
+        HidroeletricProduction.__init__(self, efficiency=0.88, gravity=10, minReservatoryVolume=12800,
+            maxReservatoryVolume=21200, minTurbineFlow=1400, maxTurbineFlow=7955, maxProductionCapacity=3230,
+            uprightPolinomy=lambda x: (303.04+(0.0015519*x) - (0.17377e-7)*(x**2)),
+            downstreamPolinomy=lambda x: (279.84 +(0.22130e-3)*x))
+
+        self.__maxFlow = maxFlow
         self.__year = year
         self.__stateSampling = stateSampling
         self.__decisionSampling = decisionSampling
-
-        self.__efficiency = 0.88
-        self.__gravity = 10
-        self.__minReservatoryVolume = 12800 #10^6 m^3
-        self.__maxReservatoryVolume = 21200 #10^6 m^3
-        self.__minTurbineFlow = 1400 #m^3/s
-        self.__maxTurbineFlow = 7955 #m^3/s
-        self.__maxFlow = 10000 #m^3/s
     
     def monthlyAvgFlow(self, month:int) -> float:
         """Returns the average flow rate[m^3/s] at each month"""
@@ -72,41 +73,22 @@ class HidroeletricProductionProblem(DiscreteDynamicProgramming):
     def thermalProductionCost(self, energy) -> float:
         return 64.8 * energy*energy*1e-6
 
-    def maximumProductionCapacity(self) -> float:
-        return 3230.0
-    
-    def rho(self) -> float:
-        return self.__efficiency * self.__gravity * 1e-3
-    
-    def uprightHeight(self, reservatoryVolume:float) -> float:
-        limitedVolume = limit(reservatoryVolume, self.__minReservatoryVolume, self.__maxReservatoryVolume)
-        
-        return 303.04 + (0.0015519 * limitedVolume) - (0.17377e-7)*limitedVolume**2
-
-    def downstreamHeight(self, turbinedFlow:float) -> float:
-        return 279.84 + (0.22130e-3) * turbinedFlow
-    
-    def generatedEnergy(self, reservatoryVolume:float, turbinedFlow:float):
-        flowThatGenerateEnergy = limit(turbinedFlow, self.__minTurbineFlow, self.__maxTurbineFlow)
-
-        return (self.rho() * (self.uprightHeight(reservatoryVolume) - self.downstreamHeight(turbinedFlow)) * flowThatGenerateEnergy)
-
     # ---------------------------------------------------------------------------------------------------------------    
 
     def state(self, k:int) -> np.array:
-        return sampling(self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
+        return sampling(self.minReservatoryVolume(), self.maxReservatoryVolume(), self.__stateSampling)
 
     def decision(self, k:int) -> np.array:
-        return sampling(self.__minTurbineFlow, self.__maxFlow, self.__decisionSampling)
+        return sampling(self.minTurbineFlow(), self.__maxFlow, self.__decisionSampling)
 
     def elementaryCost(self, k:int, state:np.array, decision:np.array) -> float:
         demand = self.monthlyPowerDemand(k)
         generatedEnergy = self.generatedEnergy(state, decision)
 
-        if generatedEnergy >= demand and generatedEnergy < self.maximumProductionCapacity():
+        if generatedEnergy >= demand and generatedEnergy < self.maxProductionCapacity():
             cost = 0
-        elif generatedEnergy>self.maximumProductionCapacity():
-            cost = self.thermalProductionCost(demand - self.maximumProductionCapacity())
+        elif generatedEnergy>self.maxProductionCapacity():
+            cost = self.thermalProductionCost(demand - self.maxProductionCapacity())
         else:
             cost = self.thermalProductionCost(demand - generatedEnergy)            
         
@@ -124,11 +106,11 @@ class HidroeletricProductionProblem(DiscreteDynamicProgramming):
         return state + (self.monthlyAvgFlow(k) - decision)*secondsOfMonth(self.__year, k)*1e-6
     
     def solveInfeasibility(self, k:int, state:np.array, FMap:dict):
-        if state<self.__minReservatoryVolume or state>self.__maxReservatoryVolume:
-            return (limit(state, self.__minReservatoryVolume, self.__maxReservatoryVolume), self.inf)
+        if state<self.minReservatoryVolume() or state>self.maxReservatoryVolume():
+            return (limit(state, self.minReservatoryVolume(), self.maxReservatoryVolume()), self.inf)
         
         else:
-            sampledState = nearestSample(state, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
+            sampledState = nearestSample(state, self.minReservatoryVolume(), self.maxReservatoryVolume(), self.__stateSampling)
             return (sampledState, FMap[(k, sampledState)])
 
     def initialState(self) -> np.array:
@@ -139,13 +121,13 @@ class HidroeletricProductionProblem(DiscreteDynamicProgramming):
         self.transitionFunction, self.elementaryCost, inf=self.inf)
     
     def optimalTrajectoryHidro(self, policy, initialState):
-        nearestVolume = lambda vol: nearestSample(vol, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
+        nearestVolume = lambda vol: nearestSample(vol, self.minReservatoryVolume(), self.maxReservatoryVolume(), self.__stateSampling)
         transitionWithNearest = lambda k, state, decision: nearestVolume(self.transitionFunction(k, state, decision))
 
         return optimalTrajectory(nearestVolume(initialState), self.numberOfStages, policy, transitionWithNearest)
     
     def costOfSolution(self, initialState, FMap):
-        nearestVolume = lambda vol: nearestSample(vol, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
+        nearestVolume = lambda vol: nearestSample(vol, self.minReservatoryVolume(), self.maxReservatoryVolume(), self.__stateSampling)
 
         return (nearestVolume(initialState), FMap[0, nearestVolume(initialState)])
 
@@ -155,7 +137,9 @@ def run(pairOfSamplings):
     _stateSampling, _decisionSampling = pairOfSamplings
     start = time()
 
-    hidro = HidroeletricProductionProblem(numberOfStages=11, year=2021,  stateSampling=_stateSampling, decisionSampling=_decisionSampling, inf=10000)
+    hidro = HidroeletricProductionProblem(numberOfStages=11, year=2021, maxFlow=10000, 
+                stateSampling=_stateSampling, decisionSampling=_decisionSampling, inf=10000)
+
     fmap, policy = hidro.solve()
     u_optimal, policy_optimal = hidro.optimalTrajectoryHidro(policy, hidro.initialState())
 
