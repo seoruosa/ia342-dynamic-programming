@@ -1,5 +1,6 @@
 import numpy as np
 import logging
+from dypro.dypro.utils import progressbar
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -46,7 +47,7 @@ def solve(state, numberOfStages:int, finalStateCost, decision, solveInfeasibilit
         logging.debug(f"{FMap}")
     
     for k in range(numberOfStages-1, -1, -1): #n-1 to 0
-        for xk in state(k):
+        for xk in progressbar(state(k)):
             F_aux = inf
             u_aux = None
             
