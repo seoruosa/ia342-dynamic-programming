@@ -1,6 +1,6 @@
 from dypro.dypro.utils import limit
 
-class HidroeletricProduction:
+class HydroelectricProduction:
     def __init__(self, efficiency, gravity, minReservatoryVolume, maxReservatoryVolume, 
                     minTurbineFlow, maxTurbineFlow, maxProductionCapacity, 
                     uprightPolinomy, downstreamPolinomy):

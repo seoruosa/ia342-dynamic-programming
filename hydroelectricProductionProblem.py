@@ -1,5 +1,5 @@
 from dypro.dypro.discreteDynamicProgramming import DiscreteDynamicProgramming
-from dypro.dypro.hidroeletricProduction import HidroeletricProduction
+from dypro.dypro.hydroelectricProduction import HydroelectricProduction
 
 from dypro.dypro.utils import limit, sampling, secondsOfMonth, nearestSample
 from dypro.dypro.solve import solve, optimalTrajectory
@@ -10,7 +10,7 @@ from time import time
 
 import concurrent.futures
 
-class HidroeletricProductionProblem(DiscreteDynamicProgramming, HidroeletricProduction):
+class HydroelectricProductionProblem(DiscreteDynamicProgramming, HydroelectricProduction):
     def __init__(self, numberOfStages:int, year:int, maxFlow, stateSampling=100, decisionSampling=100, inf=np.inf):
         DiscreteDynamicProgramming.__init__(self, numberOfStages=numberOfStages, inf=inf)
 

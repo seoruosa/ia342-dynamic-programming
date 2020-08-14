@@ -8,7 +8,7 @@ import concurrent.futures
 
 logging.basicConfig(level=logging.DEBUG)
 
-class HidroeletricAguaVermelha:
+class HydroelectricAguaVermelha:
     def __init__(self, stateSampling=100, decisionSampling=100, inf=np.inf):
         self.__efficiency = 0.88
         self.__gravity = 10
