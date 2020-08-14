@@ -93,7 +93,7 @@ class HydroelectricAguaVermelha:
         return (feasibleState, isInfeasible)
 
 
-class HidroeletricIlhaSolteira:
+class HydroelectricIlhaSolteira:
     def __init__(self, stateSampling=100, decisionSampling=100, inf=np.inf):
         self.__efficiency = 0.89
         self.__gravity = 10
@@ -177,10 +177,10 @@ class HidroeletricIlhaSolteira:
             
         return (feasibleState, wasInfeasible)
 
-class HidroeletricProductionProblem2:
+class HydroelectricProductionProblem2:
     def __init__(self, stateSampling=100, decisionSampling=100, inf=np.inf):
-        self.__aguaVermelha = HidroeletricAguaVermelha(stateSampling, decisionSampling, inf)
-        self.__ilhaSolteira = HidroeletricIlhaSolteira(stateSampling, decisionSampling, inf)
+        self.__aguaVermelha = HydroelectricAguaVermelha(stateSampling, decisionSampling, inf)
+        self.__ilhaSolteira = HydroelectricIlhaSolteira(stateSampling, decisionSampling, inf)
         self.stateSampling = stateSampling
         self.decisionSampling = decisionSampling
         self.__numberOfStages = 11
@@ -292,7 +292,7 @@ class HidroeletricProductionProblem2:
         return (nearestVolume(initialState), FMap[0, nearestVolume(initialState)])
 
 if __name__ == "__main__":
-    h = HidroeletricProductionProblem2(1000, 1000, 100000)
+    h = HydroelectricProductionProblem2(500, 500, 100000)
 
     Fmap, policy = h.solveHidro()
 
