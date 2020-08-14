@@ -2,6 +2,8 @@ from calendar import monthrange
 from math import ceil
 import logging
 
+import sys
+
 logging.basicConfig(level=logging.ERROR)
 
 SECONDS_OF_DAY = 24*60*60
@@ -80,3 +82,18 @@ def sampling(min, max, period=1):
         value = value if value<max else max
 
         yield value
+
+
+# https://stackoverflow.com/a/34482761
+def progressbar(it, prefix="", size=60, file=sys.stdout):
+    count = len(it)
+    def show(j):
+        x = int(size*j/count)
+        file.write("%s[%s%s] %i/%i\r" % (prefix, "#"*x, "."*(size-x), j, count))
+        file.flush()        
+    show(0)
+    for i, item in enumerate(it):
+        yield item
+        show(i+1)
+    file.write("\n")
+    file.flush()
