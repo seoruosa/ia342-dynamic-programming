@@ -46,7 +46,7 @@ def daysOfMonth(year:int, month:int) -> int:
     return monthrange(year, month+1)[1]
 
 def secondsOfMonth(year:int, month:int) -> int:
-    return daysOfMonth(year, month+1) * SECONDS_OF_DAY
+    return daysOfMonth(year, month) * SECONDS_OF_DAY
 
 def nearestSample(value, min, max, period=1):
     
