@@ -14,7 +14,7 @@ class HydroelectricProductionProblem(DiscreteDynamicProgramming, HydroelectricPr
     def __init__(self, numberOfStages:int, year:int, maxFlow, stateSampling=100, decisionSampling=100, inf=np.inf):
         DiscreteDynamicProgramming.__init__(self, numberOfStages=numberOfStages, inf=inf)
 
-        HidroeletricProduction.__init__(self, efficiency=0.88, gravity=10, minReservatoryVolume=12800,
+        HydroelectricProduction.__init__(self, efficiency=0.88, gravity=10, minReservatoryVolume=12800,
             maxReservatoryVolume=21200, minTurbineFlow=1400, maxTurbineFlow=7955, maxProductionCapacity=3230,
             uprightPolinomy=lambda x: (303.04+(0.0015519*x) - (0.17377e-7)*(x**2)),
             downstreamPolinomy=lambda x: (279.84 +(0.22130e-3)*x))
@@ -126,6 +126,9 @@ class HydroelectricProductionProblem(DiscreteDynamicProgramming, HydroelectricPr
 
         return optimalTrajectory(nearestVolume(initialState), self.numberOfStages, policy, transitionWithNearest)
     
+    # def productedEnergyOfOptimalTrajectory(self, optimalTrajectoryList):
+    #     return {key:self.generatedEnergy() optimalTrajectoryList}
+    
     def costOfSolution(self, initialState, FMap):
         nearestVolume = lambda vol: nearestSample(vol, self.minReservatoryVolume(), self.maxReservatoryVolume(), self.__stateSampling)
 
@@ -137,7 +140,7 @@ def run(pairOfSamplings):
     _stateSampling, _decisionSampling = pairOfSamplings
     start = time()
 
-    hidro = HidroeletricProductionProblem(numberOfStages=11, year=2021, maxFlow=10000, 
+    hidro = HydroelectricProductionProblem(numberOfStages=12, year=2021, maxFlow=10000, 
                 stateSampling=_stateSampling, decisionSampling=_decisionSampling, inf=10000)
 
     fmap, policy = hidro.solve()
