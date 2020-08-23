@@ -91,6 +91,9 @@ class HydroelectricAguaVermelha:
             feasibleState = nearestSample(state, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
             
         return (feasibleState, isInfeasible)
+    
+    def nearestVolume(self, volume):
+        return nearestSample(volume, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
 
 
 class HydroelectricIlhaSolteira:
@@ -176,6 +179,9 @@ class HydroelectricIlhaSolteira:
             feasibleState = nearestSample(state, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
             
         return (feasibleState, wasInfeasible)
+    
+    def nearestVolume(self, volume):
+        return nearestSample(volume, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
 
 class HydroelectricProductionProblem2:
     def __init__(self, stateSampling=100, decisionSampling=100, inf=np.inf):
@@ -183,9 +189,12 @@ class HydroelectricProductionProblem2:
         self.__ilhaSolteira = HydroelectricIlhaSolteira(stateSampling, decisionSampling, inf)
         self.stateSampling = stateSampling
         self.decisionSampling = decisionSampling
-        self.__numberOfStages = 11
+        self.__numberOfStages = 12
         self.__inf = inf
         self.__year = 2021
+    
+    def inf(self):
+        return self.__inf
     
     def monthlyPowerDemand(self, month:int) -> float:
         """Returns the expected demand of each month"""
@@ -281,21 +290,32 @@ class HydroelectricProductionProblem2:
         self.transitionFunction, self.elementaryCost, inf=self.__inf)
     
     def optimalTrajectoryHidro(self, policy, initialState):
-        nearestVolume = lambda vol: nearestSample(vol, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
-        transitionWithNearest = lambda k, state, decision: nearestVolume(self.transitionFunction(k, state, decision))
+        transitionWithNearest = lambda k, state, decision: self.nearestVolume(self.transitionFunction(k, state, decision))
 
-        return optimalTrajectory(nearestVolume(initialState), self.__numberOfStages, policy, transitionWithNearest)
+        return optimalTrajectory(self.nearestVolume(initialState), self.__numberOfStages, policy, transitionWithNearest)
+    
+    def nearestVolume(self, state):
+        return (self.__aguaVermelha.nearestVolume(state[0]), self.__ilhaSolteira.nearestVolume(state[1]))
     
     def costOfSolution(self, initialState, FMap):
-        nearestVolume = lambda vol: nearestSample(vol, self.__minReservatoryVolume, self.__maxReservatoryVolume, self.__stateSampling)
-
-        return (nearestVolume(initialState), FMap[0, nearestVolume(initialState)])
+        return (self.nearestVolume(initialState), FMap[0, self.nearestVolume(initialState)])
 
 if __name__ == "__main__":
-    h = HydroelectricProductionProblem2(500, 500, 100000)
+    h = HydroelectricProductionProblem2(200, 200, 1000000)
 
     Fmap, policy = h.solveHidro()
 
-    print(Fmap)
-    print("\n\n")
-    print(policy)
+    # Fmap = {key:Fmap[key] for key in Fmap if Fmap[key]<h.inf()}
+
+    nearestInitial, cost = h.costOfSolution(h.initialState(), Fmap)
+    print(f"initialVolume: {nearestInitial}\nCost: {cost} M de reais\n")
+
+
+    u_optimal, policy_optimal = h.optimalTrajectoryHidro(policy, nearestInitial)
+
+    print(f"u_optimal: {u_optimal}")
+    print(f"policy_optimal: {policy_optimal}")
+
+    # print(Fmap)
+    # print("\n\n\n\n")
+    # print(policy)
