@@ -128,7 +128,7 @@ class HydroelectricStochasticProductionProblem(HydroelectricProduction,  Stochas
 if __name__ == "__main__":
 
     start = time()
-    h = HydroelectricStochasticProductionProblem(numberOfStages=12, year=2021, maxFlow=15000, stateSampling=10, decisionSampling=10, inf=100000)
+    h = HydroelectricStochasticProductionProblem(numberOfStages=12, year=2021, maxFlow=15000, stateSampling=50, decisionSampling=50, inf=100000)
     
     fmap, policy = h.solve()
 
@@ -142,6 +142,19 @@ if __name__ == "__main__":
 
     # print(fmap)
 
+    print_map = dict()
+    
+    for key in fmap:
+        if key[0] not in print_map:
+            print_map[key[0]] = {key:fmap[key]}
+        else:
+            print_map[key[0]][key] = fmap[key]
+    
+    for stage in print_map:
+        print(f"{stage}")
+        print(print_map[stage])
+        print("\n\n")
+        
     # print("\n\n\n\n")
 
     # print(policy)
