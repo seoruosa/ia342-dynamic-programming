@@ -8,3 +8,4 @@ dypro/__pycache__/
 **/venv/
 **/playground.py
 **.pyc
+out_stochastic.txt

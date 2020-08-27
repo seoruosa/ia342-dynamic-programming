@@ -181,9 +181,7 @@ class DiscreteDynamicProblem(metaclass=abc.ABCMeta):
         Yields:
             int: stage
         """
-        stagesList= range(self.numberOfStages()-1, -1, -1)
-        for stage in stagesList:
-            yield stage
+        return range(self.numberOfStages()-1, -1, -1)
 
 def generatorFromLIst(itens:list):
     """

@@ -1,7 +1,7 @@
 import abc
 import logging
 import numpy as np
-from randomVariable import RandomVariable
+from dypro.dypro.randomVariable import RandomVariable
 
 logging.basicConfig(level=logging.ERROR)
 

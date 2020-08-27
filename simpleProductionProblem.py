@@ -1,5 +1,5 @@
-from discreteDynamicProblem import DiscreteDynamicProblem
-from discreteDynamicProblem import generatorFromLIst
+from dypro.dypro.discreteDynamicProblem import DiscreteDynamicProblem
+from dypro.dypro.discreteDynamicProblem import generatorFromLIst
 import numpy as np
 
 class SimpleProductionProblem(DiscreteDynamicProblem):

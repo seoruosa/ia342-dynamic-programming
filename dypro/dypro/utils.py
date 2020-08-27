@@ -2,6 +2,8 @@ from calendar import monthrange
 from math import ceil
 import logging
 
+import sys
+
 logging.basicConfig(level=logging.ERROR)
 
 SECONDS_OF_DAY = 24*60*60
@@ -44,7 +46,7 @@ def daysOfMonth(year:int, month:int) -> int:
     return monthrange(year, month+1)[1]
 
 def secondsOfMonth(year:int, month:int) -> int:
-    return daysOfMonth(year, month+1) * SECONDS_OF_DAY
+    return daysOfMonth(year, month) * SECONDS_OF_DAY
 
 def nearestSample(value, min, max, period=1):
     
@@ -63,6 +65,16 @@ def nearestSample(value, min, max, period=1):
     return output
 
 def sampling(min, max, period=1):
+    """Function to generate a discretization of interval, given a step.
+
+    Args:
+        min ([type]): minimum value of interval
+        max ([type]): maximum value of interval
+        period (optional): Size of step. Defaults to 1.
+
+    Yields:
+        [type]: returns all discretized values of interval
+    """    
     _maxOfRange = ceil((max-min)/period)
     
     for i in range(_maxOfRange + 1):
@@ -70,3 +82,18 @@ def sampling(min, max, period=1):
         value = value if value<max else max
 
         yield value
+
+
+# https://stackoverflow.com/a/34482761
+def progressbar(it, prefix="", size=60, file=sys.stdout):
+    count = len(it)
+    def show(j):
+        x = int(size*j/count)
+        file.write("%s[%s%s] %i/%i\r" % (prefix, "#"*x, "."*(size-x), j, count))
+        file.flush()        
+    show(0)
+    for i, item in enumerate(it):
+        yield item
+        show(i+1)
+    file.write("\n")
+    file.flush()

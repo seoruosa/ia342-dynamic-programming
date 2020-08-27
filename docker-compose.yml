@@ -1,0 +1,14 @@
+version: '3'
+
+services: 
+    anaconda:
+        image: "continuumio/anaconda3"
+        command: 
+            /opt/conda/bin/jupyter notebook --notebook-dir=/opt/notebooks --ip='*' --port=8888 --no-browser --allow-root
+        ports: 
+            - "8888:8888"
+        volumes:
+            - ~/code/ia342-dynamic-programming/notebooks:/opt/notebooks
+            - ~/code/ia342-dynamic-programming/:/opt/ia342-dynamic-programming
+        tty:
+            true
