@@ -139,20 +139,6 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
         """
         pass
 
-    # @abc.abstractmethod
-    # def probability(self, k:int, random_variable:np.array) -> float:
-    #     """
-    #     Returns a probability for random variable
-
-    #     Args:
-    #         k (int): [description]
-    #         random_variable (np.array): [description]
-
-    #     Returns:
-    #         float: [description]
-    #     """
-    #     pass
-
     @abc.abstractmethod
     def realizableRandomValues(self, k:int) -> RandomVariable:
         """
@@ -191,25 +177,6 @@ class StochasticDiscreteDynamicProblem(metaclass=abc.ABCMeta):
                         u_aux = uk
                 self.__F[k, xk] = F_aux
                 self.__policy[k, xk] = u_aux
-    
-    # def optimalTrajectory(self, initialState:np.array):
-    #     """
-    #     Calculates the optimal trajectory given a initial state
-
-    #     Args:
-    #         initialState (np.array): initial state to calculate the optimal trajectory
-
-    #     Returns:
-    #         u_optimal: states of the optimal trajectory
-    #         policy_optimal: decisions for the optimal trajectory
-    #     """
-    #     u_optimal = [initialState]
-    #     policy_optimal = list()
-    #     for k in range(self.numberOfStages()):
-    #         policy_optimal.append(self.policy(k, u_optimal[-1]))
-    #         u_optimal.append(self.transitionFunction(k, u_optimal[-1], policy_optimal[-1]))
-        
-    #     return (u_optimal, policy_optimal, )
 
     def __stagesGenerator(self):
         """
