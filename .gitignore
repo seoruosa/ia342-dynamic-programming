@@ -9,3 +9,4 @@ dypro/__pycache__/
 **/playground.py
 **.pyc
 out_stochastic.txt
+**/.ipynb_checkpoints/
