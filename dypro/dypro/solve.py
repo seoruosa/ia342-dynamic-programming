@@ -1,7 +1,6 @@
 import numpy as np
 import logging
 import sys, time
-from dypro.dypro.utils import progressbar
 
 logging.basicConfig(level=logging.ERROR)
 
@@ -51,7 +50,7 @@ def solve(state, numberOfStages:int, finalStateCost, decision, solveInfeasibilit
 	
 	for k in range(numberOfStages-1, -1, -1): #n-1 to 0
 		start_time = time.time()
-		for xk in progressbar(state(k), prefix="states  >>>>>>" ,file=sys.stderr):
+		for xk in state(k):
 			F_aux = inf
 			u_aux = None
 			
