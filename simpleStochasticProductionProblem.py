@@ -21,13 +21,7 @@ class SimpleStochasticDiscreteDynamicProblem(StochasticDiscreteDynamicProblem):
         return self.__feasibleDecisions(k)
 
     def elementaryCost(self, k:int, state:np.array, decision:np.array, random_variable:np.array) -> float:
-        # return self.__productionCost(k, decision) + self.__stockCost(k, state) + self.__stockCost(k, state + decision - random_variable)
-        # return self.__productionCost(k, decision) + self.__stockCost(k, self.__limit(state + decision - random_variable, 0, 4)) + self.__stockCost(k, state + decision - random_variable)
         return self.__productionCost(k, decision) + self.__stockCost(k, state + decision - random_variable)
-    
-    # def __costOfDontMeetTheDemand(self, k, state, decision, random_variable):
-        
-    #     return
 
     def finalStateCost(self, state:np.array) -> float:
         return self.__finalStateCost(state)
